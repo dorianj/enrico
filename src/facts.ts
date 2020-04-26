@@ -3,6 +3,8 @@ import { DateTime } from "luxon";
 
 
 export interface Fact {
+  sum(): number;
+  multiply(other: Fact): Fact;
 }
 
 // A fact that changes with the time.
@@ -10,21 +12,44 @@ export interface TemporalFact {
   atTime(time: DateTime): Fact;
 }
 
+type LUTMap = Record<string, number>;
+
 export class LUTFact implements Fact {
-  _lut: object;
-  constructor(lut: object) {
+  _lut: LUTMap;
+
+  constructor(lut: LUTMap) {
     this._lut = lut;
+  }
+
+  get lut(): LUTMap {
+    return this._lut;
+  }
+
+  sum(): number {
+    return _(this.lut).values().sum();
+  }
+
+  multiply(other: Fact): Fact {
+    if (!(other instanceof LUTFact)) {
+      throw Error(`LUTFact.multiply can't operate on ${typeof other}`);
+    }
+
+    const newLUT = _(this.lut)
+      .toPairs()
+      .map(([key, value]) => [key, value * other.lut[key]])
+      .fromPairs()
+      .value();
+
+    return new LUTFact(newLUT);
   }
 }
 
-export class Histogram {
-
+export class Histogram extends LUTFact {
 }
 
-export class PopulationByTimezone implements TemporalFact {
-  _lut: object;
+export class PopulationByTimezone extends LUTFact implements TemporalFact {
   constructor() {
-    this._lut = {
+    super({
       "Africa/Abidjan": 32550661,
       "Africa/Accra": 38501336,
       "Africa/Addis_Ababa": 111058544,
@@ -399,12 +424,12 @@ export class PopulationByTimezone implements TemporalFact {
       "Pacific/Tarawa": 123910,
       "Pacific/Tongatapu": 106496,
       "Pacific/Wallis": 10494,
-    };
+    });
   }
 
   atTime(time: DateTime): Fact {
     const lutByHour: any = {};
-    _.each(this._lut, ((population, timezone) => {
+    _.each(this.lut, ((population, timezone) => {
       const hour = time.setZone(timezone).hour;
       if (!lutByHour[hour]) {
         lutByHour[hour] = 0;

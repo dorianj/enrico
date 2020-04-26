@@ -1,7 +1,8 @@
 import React from 'react';
 import { DateTime } from "luxon";
 
-import { PopulationByTimezone } from './facts';
+import { PopulationByTimezone, Histogram } from './facts';
+import formatters from "./formatters";
 
 function EstmationDisplay() {
   const populationByHour = new PopulationByTimezone().atTime(DateTime.local());
@@ -9,7 +10,7 @@ function EstmationDisplay() {
 
   // [1] https://advances.sciencemag.org/content/2/5/e1501705/tab-figures-data
   // TODO: estimate from the raw data, not from the terrible graphs
-  const awakeEstimation = {
+  const awakeEstimation = new Histogram({
     // Wake time estimated from [1] Figure E
     4:  0.025,  // 0.025
     5:  0.075,  // 0.05
@@ -36,11 +37,14 @@ function EstmationDisplay() {
     1:  0.025, // 0.05
     2:  0.000, // 0.025
     3:  0
-  };
+  });
 
-  console.log("EstmationDisplay", populationByHour);
+  const awakePerHour = populationByHour.multiply(awakeEstimation);
+  const formattedPopulation = formatters.wholeNumberWithCommas(awakePerHour.sum());
+
   return (
     <div className="EstmationDisplay">
+      There are about { formattedPopulation } people awake right now.
     </div>
   );
 }
