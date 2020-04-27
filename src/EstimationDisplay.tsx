@@ -5,7 +5,7 @@ import { PopulationByTimezone, Histogram } from './facts';
 import formatters from "./formatters";
 
 function EstmationDisplay() {
-  const populationByHour = new PopulationByTimezone().atTime(DateTime.local());
+  const populationByHour = new PopulationByTimezone().atParameter(DateTime.local());
 
 
   // [1] https://advances.sciencemag.org/content/2/5/e1501705/tab-figures-data

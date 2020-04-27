@@ -7,13 +7,43 @@ export interface Fact {
   multiply(other: Fact): Fact;
 }
 
-// A fact that changes with the time.
-export interface TemporalFact {
-  atTime(time: DateTime): Fact;
+export interface ParameterizedFact<T extends Fact> {
+  atParameter(fact: T): Fact;
+}
+
+export class ScalarFact<T> implements Fact {
+  _value: T;
+
+  constructor(val: T) {
+    this._value = val;
+  }
+
+  get value(): T {
+    return this._value;
+  }
+
+  multiply(other: Fact): Fact {
+    if (other instanceof ScalarFact) {
+      if (typeof this.value === 'number') {
+        return new ScalarFact(other.value * this.value);
+      } else {
+        throw Error(`ScalarFact.multiply own scalar unknown ${typeof this.value}`);
+      }
+    } else {
+      throw Error(`ScalarFact.multiply can't operate on ${typeof other}`);
+    }
+  }
+
+  sum(): number {
+    if (typeof this.value === 'number') {
+      return this.value;
+    } else {
+      return 0;
+    }
+  }
 }
 
 type LUTMap = Record<string, number>;
-
 export class LUTFact implements Fact {
   _lut: LUTMap;
 
@@ -47,7 +77,7 @@ export class LUTFact implements Fact {
 export class Histogram extends LUTFact {
 }
 
-export class PopulationByTimezone extends LUTFact implements TemporalFact {
+export class PopulationByTimezone extends LUTFact implements ParameterizedFact<ScalarFact<DateTime>> {
   constructor() {
     super({
       "Africa/Abidjan": 32550661,
@@ -427,10 +457,10 @@ export class PopulationByTimezone extends LUTFact implements TemporalFact {
     });
   }
 
-  atTime(time: DateTime): Fact {
+  atParameter(time: ScalarFact<DateTime>): Fact {
     const lutByHour: any = {};
     _.each(this.lut, ((population, timezone) => {
-      const hour = time.setZone(timezone).hour;
+      const hour = time.value.setZone(timezone).hour;
       if (!lutByHour[hour]) {
         lutByHour[hour] = 0;
       }
