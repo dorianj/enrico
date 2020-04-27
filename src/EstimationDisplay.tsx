@@ -1,13 +1,11 @@
 import React from 'react';
 import { DateTime } from "luxon";
 
-import { PopulationByTimezone, Histogram } from './facts';
+import { Estimation, EstimationNode, EstimationOperation } from './estimation';
+import { PopulationByTimezone, Histogram, ScalarFact } from './facts';
 import formatters from "./formatters";
 
 function EstmationDisplay() {
-  const populationByHour = new PopulationByTimezone().atParameter(DateTime.local());
-
-
   // [1] https://advances.sciencemag.org/content/2/5/e1501705/tab-figures-data
   // TODO: estimate from the raw data, not from the terrible graphs
   const awakeEstimation = new Histogram({
@@ -39,8 +37,14 @@ function EstmationDisplay() {
     3:  0
   });
 
-  const awakePerHour = populationByHour.multiply(awakeEstimation);
-  const formattedPopulation = formatters.wholeNumberWithCommas(awakePerHour.sum());
+  const populationByHour = new EstimationNode(
+    [new PopulationByTimezone(), new ScalarFact(DateTime.local())],
+    EstimationOperation.ApplyParameter);
+  const awakePerHour = new EstimationNode(
+    [populationByHour.output, awakeEstimation],
+    EstimationOperation.Multiply);
+
+  const formattedPopulation = formatters.wholeNumberWithCommas(awakePerHour.output.sum());
 
   return (
     <div className="EstmationDisplay">

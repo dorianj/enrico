@@ -2,9 +2,12 @@ import _ from "lodash";
 import { DateTime } from "luxon";
 
 
-export interface Fact {
+export interface Computable {
   sum(): number;
-  multiply(other: Fact): Fact;
+  multiply(other: Computable): Computable;
+}
+
+export interface Fact extends Computable {
 }
 
 export interface ParameterizedFact<T extends Fact> {
