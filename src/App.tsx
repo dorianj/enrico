@@ -3,7 +3,7 @@ import { DateTime } from "luxon";
 
 import { Estimation, EstimationNode, EstimationOperation } from './estimation';
 import { PopulationByTimezone, Histogram, ScalarFact } from './facts';
-import EstimationDisplay from './EstimationDisplay';
+import EstimationDisplay from './EstimationView';
 
 import './App.css';
 
