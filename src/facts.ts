@@ -5,6 +5,7 @@ import { DateTime } from "luxon";
 export interface Computable {
   sum(): number;
   multiply(other: Computable): Computable;
+  scalar(): ScalarFact<number>;
 }
 
 export interface Fact extends Computable {
@@ -41,8 +42,12 @@ export class ScalarFact<T> implements Fact {
     if (typeof this.value === 'number') {
       return this.value;
     } else {
-      return 0;
+      throw new Error(`ScalarFact of type ${this.value} can't sum.`);
     }
+  }
+
+  scalar(): ScalarFact<number> {
+    return new ScalarFact(this.sum());
   }
 }
 
@@ -74,6 +79,10 @@ export class LUTFact implements Fact {
       .value();
 
     return new LUTFact(newLUT);
+  }
+
+  scalar(): ScalarFact<number> {
+    return new ScalarFact(this.sum());
   }
 }
 

@@ -5,6 +5,7 @@ import { Computable, Fact, ParameterizedFact, ScalarFact } from './facts';
 export enum EstimationOperation {
   ApplyParameter,
   Multiply,
+  Sum
 }
 
 function isParameterizedFact(c: unknown): c is ParameterizedFact<Fact> {
@@ -25,6 +26,7 @@ export class EstimationNode implements Computable {
         }
 
         return this.inputs[0].multiply(this.inputs[1]);
+
       case EstimationOperation.ApplyParameter:
         if (this.inputs.length !== 2) {
           throw new Error(`Can't apply parameter to ${this.inputs.length} inputs.`);
@@ -36,6 +38,11 @@ export class EstimationNode implements Computable {
         }
 
         return parameterizable.atParameter(this.inputs[1]);
+
+      case EstimationOperation.Sum:
+        return new ScalarFact<number>(_(this.inputs)
+          .map(input => input.sum())
+          .sum());
     }
   }
 
@@ -48,10 +55,14 @@ export class EstimationNode implements Computable {
       return accumulator.multiply(value);
     }, new ScalarFact(1));
   }
+
+  scalar(): ScalarFact<number> {
+    return this.output.scalar();
+  }
 }
 
 export class Estimation {
-  constructor(private terminalNode: EstimationNode) {
+  constructor(readonly terminalNode: EstimationNode) {
 
   }
 }
