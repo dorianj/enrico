@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { Estimation, EstimationNode  } from './estimation';
-import { EstimationLayout  } from './EstimationLayout';
+import { Estimation } from './estimation';
+import { EstimationLayout, LayoutItem  } from './EstimationLayout';
 import formatters from "./formatters";
 
 type EstimationViewProps = {
@@ -11,14 +11,20 @@ type EstimationViewProps = {
 };
 
 type EstimationNodeViewProps = {
-  node: EstimationNode,
+  layoutItem: LayoutItem
 };
 
 
-function EstimationNodeView(props: EstimationNodeViewProps) {
+function EstimationNodeView({layoutItem}: EstimationNodeViewProps) {
+  const style = {
+    width: `${layoutItem.position.width}px`,
+    height: `${layoutItem.position.height}px`,
+    top: `${layoutItem.position.y}px`,
+    left: `${layoutItem.position.x}px`,
+  };
   return (
-    <div className="EstimationNodeView">
-      it's a whole thing don't worry about it
+    <div className="EstimationNodeView" style={ style } key={ JSON.stringify(style) }>
+      { layoutItem.node.label }
     </div>
   )
 }
@@ -26,7 +32,8 @@ function EstimationNodeView(props: EstimationNodeViewProps) {
 export default function EstmationView({width, height, estimation}: EstimationViewProps) {
   const layout = new EstimationLayout(width, height, estimation);
 
-  const nodeViews = layout.allNodes.map(node => EstimationNodeView({node}));
+  console.log("layout root", layout.rootLayoutItem);
+  const nodeViews = layout.allLayoutItems.map(layoutItem => EstimationNodeView({layoutItem}));
 
   const formattedPopulation = formatters.wholeNumberWithCommas(
     estimation.terminalNode.output.scalar().value);
@@ -39,7 +46,7 @@ export default function EstmationView({width, height, estimation}: EstimationVie
   return (
     <div className="EstimationView">
       <div className="info">
-        This digram is { layout.depth } tall
+        This digram is { layout.depth } tall with { layout.allLayoutItems.length } items
       </div>
 
       <div className="palette" style={ paletteStyle }>

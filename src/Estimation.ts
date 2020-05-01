@@ -22,6 +22,9 @@ export abstract class EstimationNode {
   constructor(readonly inputs: EstimationNode[]) {
   }
 
+  get label(): string {
+    return "node";
+  }
   abstract get output(): Computable;
 
   static factory(inputs: EstimationNode[], operation: EstimationOperation): EstimationNode {
@@ -52,6 +55,10 @@ export class ConstantEstimationNode extends EstimationNode {
     super([]);
   }
 
+  get label(): string {
+    return "Constant";
+  }
+
   get output(): Computable {
     return this.constant;
   }
@@ -59,6 +66,10 @@ export class ConstantEstimationNode extends EstimationNode {
 
 class SumEstimationNode extends EstimationNode {
   static readonly inputSlots = null;
+
+  get label(): string {
+    return "Sum";
+  }
 
   get output(): Computable {
     return new ScalarFact<number>(_(this.inputs)
@@ -71,6 +82,10 @@ class MultiplyEstimationNode extends EstimationNode {
   // TODO (dorianj): maybe this should be infinite?
   // The challenge is that certain types aren't commutative when multiplying
   static readonly inputSlots = 2;
+
+  get label(): string {
+    return "Multiply";
+  }
 
   get output(): Computable {
     return this.inputs[0].output.multiply(this.inputs[1].output);
@@ -91,6 +106,10 @@ class ApplyParameterEstimationNode extends EstimationNode {
     } else {
       throw new Error(`Can't apply parameter to ${this.inputs[0]}`);
     }
+  }
+
+  get label(): string {
+    return "Apply Param";
   }
 
   get output(): Computable {
