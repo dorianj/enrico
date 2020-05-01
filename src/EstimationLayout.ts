@@ -1,7 +1,6 @@
 import _ from 'lodash';
 
 import { Estimation, EstimationNode } from './estimation';
-import { Computable } from './facts';
 
 export class EstimationLayout {
   constructor(
@@ -21,9 +20,20 @@ export class EstimationLayout {
     return _traverseNode(this.estimation.terminalNode, 1);
   }
 
-  get allNodes(): Array<Computable | EstimationNode> {
-    //const untraversed = [];
-    ///const traversed = [];
-    return [];
+  get allNodes(): EstimationNode[] {
+    const untraversed: EstimationNode[] = [];
+    const traversed: EstimationNode[] = [];
+
+    untraversed.push(...this.estimation.terminalNode.inputs);
+
+    while (untraversed.length) {
+      const node = untraversed.pop();
+      if (node !== undefined) {
+        traversed.push(node);
+        untraversed.push(...node.inputs);
+      }
+    }
+
+    return traversed;
   }
 }

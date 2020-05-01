@@ -22,8 +22,15 @@
   color: #61dafb;
 }
 
-
-
-.EstimationView canvas.estimation {
+.EstimationView .palette {
   background-color: #282c34;
+  position: relative;
+}
+
+.EstimationNodeView {
+  display: block;
+  background-color: #fff;
+  position: absolute;
+  width: 100px;
+  height: 100px;
 }

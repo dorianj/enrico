@@ -14,10 +14,11 @@ type EstimationNodeViewProps = {
   node: EstimationNode,
 };
 
+
 function EstimationNodeView(props: EstimationNodeViewProps) {
   return (
     <div className="EstimationNodeView">
-      { props.node }
+      it's a whole thing don't worry about it
     </div>
   )
 }
@@ -25,10 +26,15 @@ function EstimationNodeView(props: EstimationNodeViewProps) {
 export default function EstmationView({width, height, estimation}: EstimationViewProps) {
   const layout = new EstimationLayout(width, height, estimation);
 
-  //const nodeViews = estimation.
+  const nodeViews = layout.allNodes.map(node => EstimationNodeView({node}));
 
   const formattedPopulation = formatters.wholeNumberWithCommas(
     estimation.terminalNode.output.scalar().value);
+
+  const paletteStyle = {
+    width: `${width}px`,
+    height: `${height}px`,
+  }
 
   return (
     <div className="EstimationView">
@@ -36,9 +42,9 @@ export default function EstmationView({width, height, estimation}: EstimationVie
         This digram is { layout.depth } tall
       </div>
 
-      <canvas className="estimation" width= { width } height={ height }>
-        { }
-      </canvas>
+      <div className="palette" style={ paletteStyle }>
+        { nodeViews }
+      </div>
 
       <div className="total">
         There are about { formattedPopulation } people awake right now.
