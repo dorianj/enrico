@@ -43,11 +43,11 @@ function App() {
     [new PopulationByTimezone(), new ScalarFact(DateTime.local())],
     EstimationOperation.ApplyParameter);
   const awakePerHour = new EstimationNode(
-    [populationByHour.output, awakeEstimation],
+    [populationByHour, awakeEstimation],
     EstimationOperation.Multiply);
 
   const totalAwake = new EstimationNode(
-      [awakePerHour.output], EstimationOperation.Sum);
+      [awakePerHour], EstimationOperation.Sum);
   const estimation = new Estimation(totalAwake);
 
   return (
