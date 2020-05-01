@@ -16,41 +16,87 @@ export function isEstimationNode(c: unknown): c is EstimationNode {
   return (c as EstimationNode).inputs !== undefined;
 }
 
-export class EstimationNode {
-  computableInputs: Computable[];
+export abstract class EstimationNode {
+  static readonly inputSlots: number | null;
 
-  constructor(
-    readonly inputs: Array<Computable | EstimationNode>,
-    readonly operation: EstimationOperation) {
-      this.computableInputs = this.inputs.map(input => isEstimationNode(input) ? input.output : input);
+  constructor(readonly inputs: EstimationNode[]) {
+  }
+
+  abstract get output(): Computable;
+
+  static factory(inputs: EstimationNode[], operation: EstimationOperation): EstimationNode {
+    const klass = (() => {
+      switch (operation) {
+        case EstimationOperation.Multiply:
+          return MultiplyEstimationNode;
+        case EstimationOperation.ApplyParameter:
+          return ApplyParameterEstimationNode;
+        case EstimationOperation.Sum:
+          return SumEstimationNode;
+      }
+    })();
+
+    if (klass.inputSlots !== null && inputs.length !== klass.inputSlots) {
+      throw new Error(
+        `${klass.name} given ${inputs.length} inputs into ${klass.inputSlots} slots`);
+    }
+
+    return new klass(inputs);
+  }
+}
+
+export class ConstantEstimationNode extends EstimationNode {
+  static readonly inputSlots = 0;
+
+  constructor(private constant: Computable) {
+    super([]);
   }
 
   get output(): Computable {
-    switch (this.operation) {
-      case EstimationOperation.Multiply:
-        if (this.computableInputs.length !== 2) {
-          throw new Error(`Can't multiply ${this.computableInputs.length} inputs.`);
-        }
+    return this.constant;
+  }
+}
 
-        return this.computableInputs[0].multiply(this.computableInputs[1]);
+class SumEstimationNode extends EstimationNode {
+  static readonly inputSlots = null;
 
-      case EstimationOperation.ApplyParameter:
-        if (this.computableInputs.length !== 2) {
-          throw new Error(`Can't apply parameter to ${this.computableInputs.length} inputs.`);
-        }
+  get output(): Computable {
+    return new ScalarFact<number>(_(this.inputs)
+      .map(input => input.output.sum())
+      .sum());
+  }
+}
 
-        const parameterizable = this.computableInputs[0];
-        if (!isParameterizedFact(parameterizable)) {
-          throw new Error(`Can't apply parameter to ${typeof this.computableInputs[0]}`);
-        }
+class MultiplyEstimationNode extends EstimationNode {
+  // TODO (dorianj): maybe this should be infinite?
+  // The challenge is that certain types aren't commutative when multiplying
+  static readonly inputSlots = 2;
 
-        return parameterizable.atParameter(this.computableInputs[1]);
+  get output(): Computable {
+    return this.inputs[0].output.multiply(this.inputs[1].output);
+  }
+}
 
-      case EstimationOperation.Sum:
-        return new ScalarFact<number>(_(this.computableInputs)
-          .map(input => input.sum())
-          .sum());
+class ApplyParameterEstimationNode extends EstimationNode {
+  static readonly inputSlots = 2;
+
+  readonly parameterizable: ParameterizedFact<Fact>;
+
+  constructor(inputs: EstimationNode[]) {
+    super(inputs);
+
+    const possiblyParameterized = this.inputs[0].output;
+    if (isParameterizedFact(possiblyParameterized)) {
+      this.parameterizable = possiblyParameterized;
+    } else {
+      throw new Error(`Can't apply parameter to ${this.inputs[0]}`);
     }
+  }
+
+  get output(): Computable {
+    // TRICKY (dorianj): at time this code was written, Fact and Computable were identical,
+    // but Fact is actually a descendent of Computable so this may break later
+    return this.parameterizable.atParameter(this.inputs[1].output);
   }
 }
 

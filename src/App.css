@@ -21,3 +21,9 @@
 .App-link {
   color: #61dafb;
 }
+
+
+
+.EstimationView canvas.estimation {
+  background-color: #282c34;
+}

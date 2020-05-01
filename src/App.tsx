@@ -1,7 +1,7 @@
 import React from 'react';
 import { DateTime } from "luxon";
 
-import { Estimation, EstimationNode, EstimationOperation } from './estimation';
+import { Estimation, EstimationNode, EstimationOperation, ConstantEstimationNode } from './estimation';
 import { PopulationByTimezone, Histogram, ScalarFact } from './facts';
 import EstimationDisplay from './EstimationView';
 
@@ -39,20 +39,20 @@ function App() {
     3:  0
   });
 
-  const populationByHour = new EstimationNode(
-    [new PopulationByTimezone(), new ScalarFact(DateTime.local())],
+  const populationByHour = EstimationNode.factory(
+    [new ConstantEstimationNode(new PopulationByTimezone()), new ConstantEstimationNode(new ScalarFact(DateTime.local()))],
     EstimationOperation.ApplyParameter);
-  const awakePerHour = new EstimationNode(
-    [populationByHour, awakeEstimation],
+  const awakePerHour = EstimationNode.factory(
+    [populationByHour, new ConstantEstimationNode(awakeEstimation)],
     EstimationOperation.Multiply);
 
-  const totalAwake = new EstimationNode(
+  const totalAwake = EstimationNode.factory(
       [awakePerHour], EstimationOperation.Sum);
   const estimation = new Estimation(totalAwake);
 
   return (
     <div className="App">
-      <EstimationDisplay estimation={ estimation }></EstimationDisplay>
+      <EstimationDisplay width={ 500 } height={ 700 } estimation={ estimation }></EstimationDisplay>
     </div>
   );
 }
