@@ -40,8 +40,6 @@ class DebugEstimationCombinatorNode extends EstimationNode {
 }
 
 function SampleLargerEstimation(): JSX.Element {
-  const constantNode = new ConstantEstimationNode(new ScalarFact(10));
-
   // Third
   const D = new DebugEstimationCombinatorNode(
     [
@@ -77,6 +75,7 @@ function SampleLargerEstimation(): JSX.Element {
     "N"
   );
 
+  // First
   const O = new DebugEstimationCombinatorNode(
     [
       E,

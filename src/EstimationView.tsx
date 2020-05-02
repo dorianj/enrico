@@ -32,7 +32,6 @@ function EstimationNodeView({layoutItem}: EstimationNodeViewProps) {
 export default function EstmationView({width, height, estimation}: EstimationViewProps) {
   const layout = new EstimationLayout(width, height, estimation);
 
-  console.log("layout root", layout.rootLayoutItem);
   const nodeViews = layout.allLayoutItems.map(layoutItem => EstimationNodeView({layoutItem}));
 
   const formattedPopulation = formatters.wholeNumberWithCommas(
@@ -46,7 +45,7 @@ export default function EstmationView({width, height, estimation}: EstimationVie
   return (
     <div className="EstimationView">
       <div className="info">
-        This digram is { layout.depth } tall with { layout.allLayoutItems.length } items
+        This digram is { layout.depth + 1 } tall with { layout.allLayoutItems.length } items
       </div>
 
       <div className="palette" style={ paletteStyle }>

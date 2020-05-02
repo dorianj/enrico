@@ -50,10 +50,6 @@ export class LayoutItem {
     return this.output === null || this.output.inputs[0] === this;
   }
 
-  get isRightmost(): boolean {
-    return this.output === null || _.last(this.output.inputs) === this;
-  }
-
   get previousSibling(): LayoutItem | null {
     if (this.output === null || this.isLeftmost) {
       return null;
@@ -148,24 +144,15 @@ export class EstimationLayout {
 
     const contour = this.contour(item, Math.min);
 
-    if ((item.node as any).label_ == "E") {
-      (item.node as any).label_ += "";
-    }
-    console.log("\t", (item.node as any).label_, "left contour", contour);
-
     item.leftSiblings.forEach((sibling) => {
       const siblingContour = this.contour(sibling, Math.max);
-      console.log("\t\t", (sibling.node as any).label_, "right contour", siblingContour);
       const maxDepth = Math.min(
         contourMax(siblingContour),
         contourMax(contour)
       );
 
-      console.log("\t\t\t", "extent", [item.y + 1, maxDepth]);
-
       for (let depth = item.y + 1; depth <= maxDepth; depth++) {
         const distance = (contour.get(depth) || 0) - (siblingContour.get(depth) || 0);
-        console.log("\t\t\t", "distance", distance);
 
         if (distance + shift <= minDistance) {
           shift = minDistance - distance;
@@ -173,7 +160,6 @@ export class EstimationLayout {
       }
 
       if (shift > 0) {
-        console.log("\t\tshift", shift);
         item.x += shift;
         item.mod += shift;
         this.centerItemsBetween(item, sibling);
@@ -184,8 +170,7 @@ export class EstimationLayout {
 
   private calculateInitialPosition() {
     this.rootLayoutItem.postorderTraversal((item: LayoutItem) => {
-      console.log(item.node.label);
-      item.y = /*this.depth - */item.depth;
+      item.y = item.depth;
 
       item.x = ((): number => {
         if (item.isLeaf) {
