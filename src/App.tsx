@@ -7,7 +7,93 @@ import EstimationDisplay from './EstimationView';
 
 import './App.css';
 
-function App() {
+import { Computable } from './facts';
+class DebugEstimationConstantNode extends EstimationNode {
+  static readonly inputSlots = 0;
+
+  constructor(private label_: string) {
+    super([]);
+  }
+
+  get label(): string {
+    return this.label_;
+  }
+
+  get output(): Computable {
+    return new ScalarFact<number>(10);
+  }
+}
+
+class DebugEstimationCombinatorNode extends EstimationNode {
+  static readonly inputSlots = 0;
+
+  constructor(inputs: EstimationNode[], private label_: string) {
+    super(inputs);
+  }
+
+  get label(): string {
+    return this.label_;
+  }
+  get output(): Computable {
+    return new ScalarFact<number>(2);
+  }
+}
+
+function SampleLargerEstimation(): JSX.Element {
+  const constantNode = new ConstantEstimationNode(new ScalarFact(10));
+
+  // Third
+  const D = new DebugEstimationCombinatorNode(
+    [
+      new DebugEstimationConstantNode("B"),
+      new DebugEstimationConstantNode("C"),
+    ],
+    "D"
+  );
+  const M = new DebugEstimationCombinatorNode(
+    [
+      new DebugEstimationConstantNode("H"),
+      new DebugEstimationConstantNode("I"),
+      new DebugEstimationConstantNode("J"),
+      new DebugEstimationConstantNode("K"),
+      new DebugEstimationConstantNode("L"),
+    ],
+    "M"
+  );
+
+  // Second
+  const E = new DebugEstimationCombinatorNode(
+    [
+      new DebugEstimationConstantNode("A"),
+      D,
+    ],
+    "E"
+  );
+  const N = new DebugEstimationCombinatorNode(
+    [
+      new DebugEstimationConstantNode("G"),
+      M
+    ],
+    "N"
+  );
+
+  const O = new DebugEstimationCombinatorNode(
+    [
+      E,
+      new DebugEstimationConstantNode("F"),
+      N
+    ],
+    "O"
+  );
+
+
+  const estimation = new Estimation(O);
+  return (
+    <EstimationDisplay width={ 700 } height={ 700 } estimation={ estimation }></EstimationDisplay>
+  );
+}
+
+function AwakeRightNowEstimation(): JSX.Element {
   // [1] https://advances.sciencemag.org/content/2/5/e1501705/tab-figures-data
   // TODO: estimate from the raw data, not from the terrible graphs
   const awakeEstimation = new Histogram({
@@ -49,10 +135,16 @@ function App() {
   const totalAwake = EstimationNode.factory(
       [awakePerHour], EstimationOperation.Sum);
   const estimation = new Estimation(totalAwake);
+  return (
+    <EstimationDisplay width={ 500 } height={ 700 } estimation={ estimation }></EstimationDisplay>
+  );
+}
 
+function App() {
   return (
     <div className="App">
-      <EstimationDisplay width={ 500 } height={ 700 } estimation={ estimation }></EstimationDisplay>
+      { SampleLargerEstimation() }
+      { AwakeRightNowEstimation() }
     </div>
   );
 }

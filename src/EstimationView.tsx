@@ -17,10 +17,10 @@ type EstimationNodeViewProps = {
 
 function EstimationNodeView({layoutItem}: EstimationNodeViewProps) {
   const style = {
-    width: `${layoutItem.position.width}px`,
-    height: `${layoutItem.position.height}px`,
-    top: `${layoutItem.position.y}px`,
-    left: `${layoutItem.position.x}px`,
+    width: `${layoutItem.width}px`,
+    height: `${layoutItem.height}px`,
+    top: `${layoutItem.y}px`,
+    left: `${layoutItem.x}px`,
   };
   return (
     <div className="EstimationNodeView" style={ style } key={ JSON.stringify(style) }>

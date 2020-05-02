@@ -23,13 +23,15 @@
 }
 
 .EstimationView .palette {
+  margin: 10px;
   background-color: #282c34;
   position: relative;
 }
 
 .EstimationNodeView {
   display: block;
-  background-color: #fff;
+  background-color: rgb(226, 226, 226);
   position: absolute;
   border-radius: 8px;
+  border: 1px solid rgb(141, 141, 141);
 }
