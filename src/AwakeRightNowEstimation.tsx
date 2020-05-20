@@ -2,8 +2,8 @@ import React from 'react';
 import { DateTime } from "luxon";
 
 import { Estimation, EstimationNode, EstimationOperation, ConstantEstimationNode } from './estimation';
+import { EstimationPage } from './EstimationPage';
 import { PopulationByTimezone, Histogram, ScalarFact } from './facts';
-import EstimationDisplay from './EstimationView';
 
 export function AwakeRightNowEstimation(): JSX.Element {
   // [1] https://advances.sciencemag.org/content/2/5/e1501705/tab-figures-data
@@ -36,9 +36,13 @@ export function AwakeRightNowEstimation(): JSX.Element {
     2: 0.000,
     3: 0
   });
-  const populationByHour = EstimationNode.factory([new ConstantEstimationNode(new PopulationByTimezone()), new ConstantEstimationNode(new ScalarFact(DateTime.local()))], EstimationOperation.ApplyParameter);
-  const awakePerHour = EstimationNode.factory([populationByHour, new ConstantEstimationNode(awakeEstimation)], EstimationOperation.Multiply);
+  const populationByHour = EstimationNode.factory(
+    [new ConstantEstimationNode(new PopulationByTimezone()), new ConstantEstimationNode(new ScalarFact(DateTime.local()))],
+    EstimationOperation.ApplyParameter);
+  const awakePerHour = EstimationNode.factory(
+    [populationByHour, new ConstantEstimationNode(awakeEstimation)],
+    EstimationOperation.Multiply);
   const totalAwake = EstimationNode.factory([awakePerHour], EstimationOperation.Sum);
   const estimation = new Estimation(totalAwake);
-  return (<EstimationDisplay width={500} height={700} estimation={estimation}></EstimationDisplay>);
+  return (<EstimationPage estimation={estimation} />);
 }

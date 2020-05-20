@@ -6,8 +6,8 @@ import {
   Link
 } from "react-router-dom";
 
-import { TreeDemoView } from './TreeDemoView';
 import { AwakeRightNowEstimation } from './AwakeRightNowEstimation';
+import { TreeDemoView } from './TreeDemoView';
 
 import './App.css';
 
