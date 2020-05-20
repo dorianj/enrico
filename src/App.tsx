@@ -14,32 +14,32 @@ import './App.css';
 export default function App() {
   return (
     <Router>
-    <div>
-      <nav>
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/tree_test">Tree test</Link>
-          </li>
-          <li>
-            <Link to="/awake_test">Awake test</Link>
-          </li>
-        </ul>
-      </nav>
-      <Switch>
-        <Route path="/tree_test">
-          <TreeDemoView />
-        </Route>
-        <Route path="/awake_test">
-          <AwakeRightNowEstimation />
-        </Route>
-        <Route path="/">
-          Hello
-        </Route>
-      </Switch>
-    </div>
-  </Router>
+      <div>
+        <nav>
+          <ul>
+            <li>
+              <Link to="/">Home</Link>
+            </li>
+            <li>
+              <Link to="/tree_test">Tree test</Link>
+            </li>
+            <li>
+              <Link to="/awake_test">Awake test</Link>
+            </li>
+          </ul>
+        </nav>
+        <Switch>
+          <Route path="/tree_test">
+            <TreeDemoView />
+          </Route>
+          <Route path="/awake_test">
+            <AwakeRightNowEstimation />
+          </Route>
+          <Route path="/">
+            Hello
+          </Route>
+        </Switch>
+      </div>
+    </Router>
   );
 }

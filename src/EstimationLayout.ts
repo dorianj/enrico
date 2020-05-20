@@ -2,13 +2,18 @@ import _ from 'lodash';
 
 import { Estimation, EstimationNode } from './estimation';
 
-const ITEM_SIZE = 60;
-const ITEM_PADDING = 30;
+const ITEM_SIZE = 75;
+const PADDING_HORIZONTAL = 20;
+const PADDING_VERTICAL = 50;
+
+export type Coordinate = [number, number];
 
 export class LayoutItem {
   public output: LayoutItem | null = null;
-  public width: number = ITEM_SIZE - 10;
-  public height: number = ITEM_SIZE - 10;
+  public width: number = ITEM_SIZE;
+  public height: number = ITEM_SIZE;
+  public inputWidth = 10;
+  public inputHeight = 10;
   public x: number = -1;
   public y: number = 0;
   public mod: number = 0;
@@ -60,6 +65,18 @@ export class LayoutItem {
 
   get leftSiblings(): LayoutItem[] {
     return this.output === null ? [] : this.output.inputs.slice(0, this.inputIndex);
+  }
+
+  get outputCoordinate(): Coordinate {
+    return [this.x + this.width / 2, this.y + this.height];
+  }
+
+  inputCoordinate(index: number): Coordinate {
+    const inputBlockWidth = this.inputWidth * (this.inputs.length + 1);
+    const inputBlockStart = this.width / 2 - inputBlockWidth / 2;
+
+
+    return [this.x + inputBlockStart + this.inputWidth * (index + 1), this.y];
   }
 }
 
@@ -175,7 +192,7 @@ export class EstimationLayout {
       item.x = ((): number => {
         if (item.isLeaf) {
           if (item.previousSibling !== null) {
-            return item.previousSibling.x + ITEM_SIZE + ITEM_PADDING;
+            return item.previousSibling.x + ITEM_SIZE + PADDING_HORIZONTAL;
           } else {
             return 0;
           }
@@ -184,7 +201,7 @@ export class EstimationLayout {
             return item.inputs[0].x;
           } else {
             if (item.previousSibling !== null) {
-              const newX = item.previousSibling.x + ITEM_SIZE + ITEM_PADDING;
+              const newX = item.previousSibling.x + ITEM_SIZE + PADDING_HORIZONTAL;
               item.mod = newX - item.inputs[0].x;
               return newX;
             } else {
@@ -198,7 +215,7 @@ export class EstimationLayout {
             return mid;
           } else {
             if (item.previousSibling !== null) {
-              const newX = item.previousSibling.x + ITEM_SIZE + ITEM_PADDING;
+              const newX = item.previousSibling.x + ITEM_SIZE + PADDING_HORIZONTAL;
               item.mod = newX - mid;
               return newX;
             } else {
@@ -232,7 +249,7 @@ export class EstimationLayout {
 
   private calculateFinalPositions() {
     this.rootLayoutItem.preorderTraversal((item: LayoutItem, mod: number): number => {
-      item.y = (this.depth - item.y) * ITEM_SIZE;
+      item.y = (this.depth - item.y) * (ITEM_SIZE + PADDING_VERTICAL);
       item.x += mod;
       return mod + item.mod;
     }, 0);
@@ -242,20 +259,5 @@ export class EstimationLayout {
     this.calculateInitialPosition();
     this.checkItemsOnscreen();
     this.calculateFinalPositions();
-  }
-
-  private get itemsByDepth(): Map<number, LayoutItem[]> {
-    const m = new Map();
-
-    this.allLayoutItems.forEach(item => {
-      const list = m.get(item.depth);
-      if (list === undefined) {
-        m.set(item.depth, [item]);
-      } else {
-        list.push(item);
-      }
-    });
-
-    return m;
   }
 }

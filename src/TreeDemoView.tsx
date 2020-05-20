@@ -3,8 +3,7 @@ import { DateTime } from "luxon";
 
 import { Computable, ScalarFact } from './facts';
 import { Estimation, EstimationNode, EstimationOperation, ConstantEstimationNode } from './estimation';
-import EstimationDisplay from './EstimationView';
-
+import EstmationView from './EstimationView';
 
 class DebugEstimationConstantNode extends EstimationNode {
   static readonly inputSlots = 0;
@@ -86,7 +85,7 @@ function SampleLargerEstimation(): JSX.Element {
 
   const estimation = new Estimation(O);
   return (
-    <EstimationDisplay width={ 700 } height={ 700 } estimation={ estimation }></EstimationDisplay>
+    <EstmationView width={ 700 } height={ 700 } estimation={ estimation }></EstmationView>
   );
 }
 
