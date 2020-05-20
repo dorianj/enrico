@@ -29,10 +29,11 @@ body {
   color: #61dafb;
 }
 
-.EstimationView .palette {
+.EstimationView {
   margin: 10px;
   background-color: #282c34;
   position: relative;
+  border-radius: 7px;
 }
 
 .EstimationNodeView {

@@ -1,10 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 
-
 import { Estimation } from './estimation';
 import { EstimationLayout, LayoutItem  } from './EstimationLayout';
-import formatters from "./formatters";
-import { createGzip } from 'zlib';
 import { EstimationNodeView } from './EstimationNodeView';
 
 type EstimationViewProps = {
@@ -45,25 +42,17 @@ export function EstimationView({width, height, estimation}: EstimationViewProps)
   });
 
   const nodeViews = layout.allLayoutItems.map(layoutItem => EstimationNodeView({layoutItem}));
-  const formattedOutput = formatters.wholeNumberWithCommas(
-    estimation.terminalNode.output.scalar().value);
 
-  const paletteStyle = {
+  const style = {
     width: `${width}px`,
     height: `${height}px`,
     position: 'relative' as 'relative',
   }
 
   return (
-    <div className="EstimationView">
-      <div className="palette" style={ paletteStyle }>
-        <canvas width={ width } height={ height } ref={ canvasRef }></canvas>
-        { nodeViews }
-      </div>
-
-      <div className="total">
-        Output: { formattedOutput }
-      </div>
+    <div className="EstimationView" style={ style }>
+      <canvas width={ width } height={ height } ref={ canvasRef }></canvas>
+      { nodeViews }
     </div>
   );
 }
