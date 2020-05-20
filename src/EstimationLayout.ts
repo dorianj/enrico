@@ -4,7 +4,7 @@ import { Estimation, EstimationNode } from './estimation';
 
 const ITEM_SIZE = 75;
 const PADDING_HORIZONTAL = 20;
-const PADDING_VERTICAL = 50;
+const PADDING_VERTICAL = 60;
 
 export type Coordinate = [number, number];
 
@@ -13,7 +13,7 @@ export class LayoutItem {
   public width: number = ITEM_SIZE;
   public height: number = ITEM_SIZE;
   public inputWidth = 10;
-  public inputHeight = 10;
+  public inputHeight = 9;
   public x: number = -1;
   public y: number = 0;
   public mod: number = 0;

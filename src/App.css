@@ -38,25 +38,42 @@ body {
 .EstimationNodeView {
   background-color: rgb(226, 226, 226);
   border-radius: 3px;
-  color: rgb(117, 126, 255);
+  color: orange;
+  text-shadow: 0 1px 0px rgba(0,0,0,0.25);
   display: block;
   position: absolute;
   font-size: 12px;
-}
-
-
-.inputLabel {
-  background-color: rgb(85, 85, 85);
-  border-bottom: 1px solid black;
-  border-left: 1px solid white;
-  border-top: 1px solid white;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.75);
   cursor: pointer;
 }
 
-.inputLabel:first-of-type {
-  border-left: none;
+.EstimationNodeView:hover {
+  background-color: rgba(255,255,255,0.25);
+  color: white;
+}
+
+.inputLabel {
+  background-color: white;
+  border: 1px solid #8d8d8d;
+  border-top: none;
+  cursor: pointer;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
 }
 
 .inputLabel:hover {
+  background-color: #8d8d8d;
+}
+
+.outputLabel {
   background-color: white;
+  border: 1px solid #8d8d8d;
+  border-bottom: none;
+  cursor: pointer;
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+}
+
+.outputLabel:hover {
+  background-color: #8d8d8d;
 }

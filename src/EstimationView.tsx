@@ -31,16 +31,28 @@ function EstimationNodeView({layoutItem}: EstimationNodeViewProps) {
   const inputDivs = layoutItem.inputs.map((input: LayoutItem) => {
     const left = layoutItem.inputCoordinate(input.inputIndex)[0] - layoutItem.x - input.inputWidth / 2
     const inputStyle = {
-      width: `${layoutItem.inputWidth}px`,
+      width: `${layoutItem.inputWidth - 1}px`,
       height: `${layoutItem.inputHeight}px`,
-      top: `-5px`,
+      top: `-4px`,
       left: `${left}px`,
       position: 'absolute' as 'absolute'
-    }
+    };
     return (
       <div className="inputLabel" style={ inputStyle }></div>
     )
-  })
+  });
+
+  const outputCoord = layoutItem.outputCoordinate[0] - layoutItem.x - layoutItem.inputWidth / 2;
+  const outputLabelStyle = {
+    width: `${layoutItem.inputWidth - 1}px`,
+    height: `${layoutItem.inputHeight}px`,
+    top: `${layoutItem.outputCoordinate[1] - layoutItem.y - 6}px`,
+    left: `${outputCoord}px`,
+    position: 'absolute' as 'absolute'
+  };
+  const outputDiv = (
+    <div className="outputLabel" style={ outputLabelStyle }></div>
+  )
 
   return (
     <div className="EstimationNodeView" style={ style } key={ JSON.stringify(style) }>
@@ -48,6 +60,9 @@ function EstimationNodeView({layoutItem}: EstimationNodeViewProps) {
         { inputDivs }
       </div>
       { layoutItem.node.label }
+      <div className="outputs">
+        { (layoutItem.output !== null) ? outputDiv : <div/> }
+      </div>
     </div>
   )
 }
@@ -82,14 +97,13 @@ export default function EstmationView({width, height, estimation}: EstimationVie
           ctx.strokeStyle = 'orange';
           const from = input.outputCoordinate;
           const to = item.inputCoordinate(input.inputIndex)
-          ctx.moveTo(from[0], from[1] - 1);
+          ctx.moveTo(from[0], from[1] + 3);
           ctx.bezierCurveTo(
             from[0] + (to[0] - from[0]) / 3, to[1],
-            from[0] + (to[0] - from[0]) / 1.5, from[1],
-            to[0], to[1] + 1
+            from[0] + (to[0] - from[0]) / 2, from[1],
+            to[0], to[1] - 3
           );
 
-          ctx.lineCap = "round";
           ctx.lineWidth = 2;
           ctx.stroke();
         }
