@@ -56,7 +56,7 @@ export class ConstantEstimationNode extends EstimationNode {
   }
 
   get label(): string {
-    return "Constant";
+    return isParameterizedFact(this.constant) ? "Parameterized constant" : "Constant";
   }
 
   get output(): Computable {
