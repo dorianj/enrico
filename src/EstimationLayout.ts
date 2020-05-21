@@ -10,17 +10,17 @@ export type Coordinate = [number, number];
 
 export class LayoutItem {
   public output: LayoutItem | null = null;
-  public width: number = ITEM_SIZE;
-  public height: number = ITEM_SIZE;
-  public inputWidth = 10;
-  public inputHeight = 9;
+  readonly width: number = ITEM_SIZE;
+  readonly height: number = ITEM_SIZE;
+  readonly inputWidth = 10;
+  readonly inputHeight = 9;
   public x: number = -1;
   public y: number = 0;
-  public mod: number = 0;
 
   public inputIndex: number = -1;
 
-  public debugInfo: string = "";
+  // Bookeeping only used for the layout engine
+  public mod: number = 0;
 
   constructor(
     readonly node: EstimationNode,

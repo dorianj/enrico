@@ -21,7 +21,7 @@ export function isScalarFact(computable: Computable): computable is ScalarFact<n
 }
 
 export class ScalarFact<T> implements Fact {
-  _value: T;
+  private _value: T;
 
   constructor(val: T) {
     this._value = val;

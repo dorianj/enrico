@@ -12,7 +12,7 @@ type EstimationViewProps = {
 };
 
 function drawConnectingLines(layout: EstimationLayout, canvasContext: CanvasRenderingContext2D): void {
-  layout.rootLayoutItem.postorderTraversal((item: LayoutItem) => {
+  layout.allLayoutItems.map(item => {
     item.inputs.forEach((input: LayoutItem) => {
       canvasContext.beginPath();
       canvasContext.strokeStyle = 'orange';
@@ -28,7 +28,7 @@ function drawConnectingLines(layout: EstimationLayout, canvasContext: CanvasRend
       canvasContext.lineWidth = 2;
       canvasContext.stroke();
     });
-  }, null);
+  });
 }
 
 export function EstimationView({width, height, estimation, setInspectedNode}: EstimationViewProps) {
