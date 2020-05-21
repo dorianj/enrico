@@ -1,12 +1,14 @@
 import React from 'react';
 
+import { EstimationNode } from './estimation';
 import { LayoutItem } from './EstimationLayout';
 
 export type EstimationNodeViewProps = {
-  layoutItem: LayoutItem
+  layoutItem: LayoutItem,
+  setInspectedNode: (value: EstimationNode) => void,
 };
 
-export function EstimationNodeView({ layoutItem }: EstimationNodeViewProps) {
+export function EstimationNodeView({layoutItem, setInspectedNode }: EstimationNodeViewProps) {
   const style = {
     width: `${layoutItem.width}px`,
     height: `${layoutItem.height}px`,
@@ -17,7 +19,7 @@ export function EstimationNodeView({ layoutItem }: EstimationNodeViewProps) {
     alignItems: 'center',
   };
 
-  const inputDivs = layoutItem.inputs.map((input: LayoutItem) => {
+  const inputDivs = layoutItem.inputs.map(input => {
     const left = layoutItem.inputCoordinate(input.inputIndex)[0] - layoutItem.x - input.inputWidth / 2;
     const inputStyle = {
       width: `${layoutItem.inputWidth - 1}px`,
@@ -26,7 +28,7 @@ export function EstimationNodeView({ layoutItem }: EstimationNodeViewProps) {
       left: `${left}px`,
       position: 'absolute' as 'absolute'
     };
-    return (<div className="inputLabel" style={inputStyle}></div>);
+    return (<div className="inputLabel" style={inputStyle} key={ input.inputIndex } />);
   });
 
   const outputCoord = layoutItem.outputCoordinate[0] - layoutItem.x - layoutItem.inputWidth / 2;
@@ -39,8 +41,9 @@ export function EstimationNodeView({ layoutItem }: EstimationNodeViewProps) {
   };
 
   const outputDiv = (<div className="outputLabel" style={outputLabelStyle}></div>);
+
   return (
-    <div className="EstimationNodeView" style={style} key={JSON.stringify(style)}>
+    <div className="EstimationNodeView" style={style} key={JSON.stringify(style)} onClick={ () => setInspectedNode(layoutItem.node) } >
       <div className="inputs">
         {inputDivs}
       </div>

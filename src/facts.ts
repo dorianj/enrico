@@ -15,6 +15,11 @@ export interface ParameterizedFact<T extends Fact> {
   atParameter(fact: T): Fact;
 }
 
+// TODO generic?
+export function isScalarFact(computable: Computable): computable is ScalarFact<number> {
+  return (computable as any)._value !== undefined;
+}
+
 export class ScalarFact<T> implements Fact {
   _value: T;
 
@@ -49,6 +54,10 @@ export class ScalarFact<T> implements Fact {
   scalar(): ScalarFact<number> {
     return new ScalarFact(this.sum());
   }
+}
+
+export function isLUTFact(computable: Computable): computable is LUTFact {
+  return !!(computable as any).lut;
 }
 
 type LUTMap = Record<string, number>;

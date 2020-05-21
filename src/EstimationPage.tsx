@@ -1,24 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-import { Estimation  } from './estimation';
+import { Estimation, EstimationNode } from './estimation';
 import { EstimationView } from './EstimationView';
-import formatters from "./formatters";
+import { NodeInspectorView } from './NodeInspectorView';
+
+
+import './EstimationPage.css';
 
 type EstimationPageProps = {
   estimation: Estimation,
 }
 
 export function EstimationPage({estimation}: EstimationPageProps) {
-  const formattedPopulation = formatters.wholeNumberWithCommas(
-    estimation.terminalNode.output.scalar().value);
+  const [inspectedNode, setInspectedNode] = useState<EstimationNode | null>(estimation.terminalNode);
 
   return (
     <div className="EstimationPage">
-      <EstimationView width={500} height={700} estimation={estimation} />
-
-      <div className="summary">
-        There are about { formattedPopulation } people awake right now.
-      </div>
+      <EstimationView width={500} height={700} estimation={ estimation } setInspectedNode={ (node) => setInspectedNode(node) } />
+      { inspectedNode && <NodeInspectorView node={ inspectedNode } /> }
     </div>
   );
 }
