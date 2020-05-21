@@ -9,6 +9,7 @@ type EstimationViewProps = {
   height: number,
   layoutItems: LayoutItem[],
   setInspectedNode: (value: EstimationNode) => void,
+  setLayoutItems: (layoutItems: LayoutItem[]) => void,
 };
 
 function drawConnectingLines(layoutItems: LayoutItem[], canvasContext: CanvasRenderingContext2D): void {
@@ -31,7 +32,7 @@ function drawConnectingLines(layoutItems: LayoutItem[], canvasContext: CanvasRen
   });
 }
 
-export function EstimationView({width, height, layoutItems, setInspectedNode}: EstimationViewProps) {
+export function EstimationView({width, height, layoutItems, setInspectedNode, setLayoutItems}: EstimationViewProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {

@@ -12,13 +12,23 @@ type EstimationPageProps = {
 }
 
 export function EstimationPage({estimation}: EstimationPageProps) {
-  const [inspectedNode, setInspectedNode] = useState<EstimationNode | null>(estimation.terminalNode);
   const width = 500, height = 800;
-  const layout = new EstimationLayout(width, height, estimation);
+
+  const [inspectedNode, setInspectedNode] = useState<EstimationNode | null>(estimation.terminalNode);
+  const [layoutItems, setLayoutItems] = useState(() => {
+    const layout = new EstimationLayout(width, height, estimation);
+    return layout.allLayoutItems;
+  });
 
   return (
     <div className="EstimationPage">
-      <EstimationView width={ width } height={ height } layoutItems={ layout.allLayoutItems } setInspectedNode={ (node) => setInspectedNode(node) } />
+      <EstimationView
+        width={ width }
+        height={ height }
+        layoutItems={ layoutItems }
+        setInspectedNode={ (node) => setInspectedNode(node) }
+        setLayoutItems={ (layoutItems) => setLayoutItems(layoutItems) }
+        />
       { inspectedNode && <NodeInspectorView node={ inspectedNode } /> }
     </div>
   );
