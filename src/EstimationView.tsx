@@ -1,54 +1,51 @@
 import React, { useEffect, useRef } from 'react';
 
-import { Estimation, EstimationNode } from './estimation';
-import { EstimationLayout, LayoutItem  } from './EstimationLayout';
+import { EstimationNode } from './estimation';
+import { LayoutItem  } from './EstimationLayout';
 import { EstimationNodeView } from './EstimationNodeView';
 
 type EstimationViewProps = {
   width: number,
   height: number,
-  estimation: Estimation,
+  layoutItems: LayoutItem[],
   setInspectedNode: (value: EstimationNode) => void,
 };
 
-function drawConnectingLines(layout: EstimationLayout, canvasContext: CanvasRenderingContext2D): void {
-  layout.allLayoutItems.map(item => {
-    item.inputs.forEach((input: LayoutItem) => {
-      canvasContext.beginPath();
-      canvasContext.strokeStyle = 'orange';
+function drawConnectingLines(layoutItems: LayoutItem[], canvasContext: CanvasRenderingContext2D): void {
+  layoutItems.forEach(item => {
+    item.inputs.forEach(input => {
       const from = input.outputCoordinate;
       const to = item.inputCoordinate(input.inputIndex)
+
+      canvasContext.beginPath();
+      canvasContext.strokeStyle = 'orange';
       canvasContext.moveTo(from[0], from[1] + 3);
       canvasContext.bezierCurveTo(
         from[0] + (to[0] - from[0]) / 3, to[1],
         from[0] + (to[0] - from[0]) / 2, from[1],
         to[0], to[1] - 3
       );
-
       canvasContext.lineWidth = 2;
       canvasContext.stroke();
     });
   });
 }
 
-export function EstimationView({width, height, estimation, setInspectedNode}: EstimationViewProps) {
+export function EstimationView({width, height, layoutItems, setInspectedNode}: EstimationViewProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const layout = new EstimationLayout(width, height, estimation);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvasRef.current?.getContext("2d");
     if (canvas && ctx) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      drawConnectingLines(layout, ctx);
+      drawConnectingLines(layoutItems, ctx);
     }
   });
 
-  const nodeViews = layout.allLayoutItems.map((layoutItem, index) => {
+  const nodeViews = layoutItems.map((item, index) => {
     return (
-      <div key={ index }>
-        <EstimationNodeView layoutItem={ layoutItem } setInspectedNode={ setInspectedNode }/>
-      </div>
+      <EstimationNodeView key={ index } layoutItem={ item } setInspectedNode={ setInspectedNode }/>
     );
   });
 
@@ -60,7 +57,7 @@ export function EstimationView({width, height, estimation, setInspectedNode}: Es
 
   return (
     <div className="EstimationView" style={ style }>
-      <canvas width={ width } height={ height } ref={ canvasRef }></canvas>
+      <canvas width={ width } height={ height } ref={ canvasRef } />
       <div>
         { nodeViews }
       </div>
