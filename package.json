@@ -15,7 +15,7 @@
     "@types/react-router-dom": "^5.1.5",
     "bootstrap": "^4.4.1",
     "lodash": "^4.17.21",
-    "luxon": "^1.23.0",
+    "luxon": "^1.28.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
